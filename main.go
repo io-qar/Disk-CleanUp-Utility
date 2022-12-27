@@ -36,7 +36,7 @@ func main() {
 	const (
 		txtAfterClean string = "Объём занимаемого места: %d%%.\nПосле очистки: %d%%"
 		txtNotClean string = "Объём занимаемого места: %d%%.\nОчистка не проводилась"
-		folderDoesntExist string = "Папка '%s' не существует. Пропускается..."
+		folderDoesntExist string = "Папки '%s' не были найдены и были пропущены..."
 		defaultVolume uint64 = 50
 	)
 	var configPath string
@@ -53,32 +53,31 @@ func main() {
 	channel := gjson.Get(string(content), "telegram-bot.channel").Str
 	folders := gjson.Get(string(content), "folders").Array()
 	maxVolume := gjson.Get(string(content), "maxVolume").Uint()
-	fmt.Println(maxVolume)
 	if maxVolume == 0 {
 		maxVolume = defaultVolume
 	}
-	fmt.Println(maxVolume)
 
 	bot = tbot.New(token)
 	client = bot.Client()
 	
 	usedDiskBefore := calcUsedDiskVolume(string(filepath.Separator))
-	fmt.Println(usedDiskBefore)
 	if maxVolume < usedDiskBefore {
+		var notExistFolders string
 		for _, folder := range folders {
-			_, err := os.Stat(folder.Str)
+			_, err := os.Stat(folder.Str) 
 			if os.IsNotExist(err) {
 				log.Println(fmt.Sprintf(folderDoesntExist, folder.Str))
-				client.SendMessage(channel, fmt.Sprintf(folderDoesntExist, folder.Str))
-			} else {
-				dir, _ := ioutil.ReadDir(folder.Str)
-				for _, d := range dir {
-					os.RemoveAll(path.Join([]string{folder.Str, d.Name()}...))
-				}
-				usedDiskAfter := calcUsedDiskVolume(string(filepath.Separator))
-				client.SendMessage(channel, fmt.Sprintf(txtAfterClean, usedDiskBefore, usedDiskAfter))
+				notExistFolders += folder.Str + "; "
+			}
+			
+			dir, _ := ioutil.ReadDir(folder.Str)
+			for _, d := range dir {
+				os.RemoveAll(path.Join([]string{folder.Str, d.Name()}...))
 			}
 		}
+		usedDiskAfter := calcUsedDiskVolume(string(filepath.Separator))
+		client.SendMessage(channel, fmt.Sprintf(folderDoesntExist, notExistFolders))
+		client.SendMessage(channel, fmt.Sprintf(txtAfterClean, usedDiskBefore, usedDiskAfter))
 	} else {
 		client.SendMessage(channel, fmt.Sprintf(txtNotClean, usedDiskBefore))
 	}

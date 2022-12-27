@@ -1,17 +1,18 @@
 {
 	// объём занимаемого пространства на диске, в процентах 
 	// если больше этого объёма, необходимо выполнять очистку
-	"maxVolume": ,
+	"maxVolume": 3,
 
 	// массив путей до каталогов, которые необходимо почистить
 	"folders": [
 		"test",
-		"testnotexist"
+		"testnotexist1",
+		"testnotexist2"
 	],
 
 	// настойка бота для информирования о результатах
   "telegram-bot": {
-		"token": "<my-secret-bot-token>",
-		"channel": "<my-chat-id>"
+		"token": "5471768780:AAEAbreeE6DDECknHmMrlD2Mfvedb5GIQ-w",
+		"channel": "1028417962"
 	}
 }
