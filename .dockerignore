@@ -1,12 +1,9 @@
 *.exe
 README.md
 
-.dockerignore
 Dockerfile
 
 .gitignore
 .git
 
 .vscode
-
-#test/
