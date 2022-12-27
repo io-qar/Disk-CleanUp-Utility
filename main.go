@@ -34,9 +34,9 @@ func calcUsedDiskVolume(path string) uint64 {
 
 func main() {
 	const (
-		txtAfterClean string = "Объём занимаемого места: %d%%.\nПосле очистки: %d%%"
-		txtNotClean string = "Объём занимаемого места: %d%%.\nОчистка не проводилась"
-		folderDoesntExist string = "Папки '%s' не были найдены и были пропущены..."
+		txtAfterClean string = "Объём занимаемого места: %d%%.\nПосле очистки: %d%%\n\n"
+		txtNotClean string = "Объём занимаемого места: %d%%.\nОчистка не проводилась\n\n"
+		folderDoesntExist string = "Папки '%s' не были найдены и были пропущены...\n\n"
 		defaultVolume uint64 = 50
 	)
 	var configPath string
@@ -66,18 +66,22 @@ func main() {
 		for _, folder := range folders {
 			_, err := os.Stat(folder.Str) 
 			if os.IsNotExist(err) {
-				log.Println(fmt.Sprintf(folderDoesntExist, folder.Str))
+				log.Print(fmt.Sprintf(folderDoesntExist, folder.Str))
 				notExistFolders += folder.Str + "; "
+				continue
 			}
 			
-			dir, _ := ioutil.ReadDir(folder.Str)
-			for _, d := range dir {
-				os.RemoveAll(path.Join([]string{folder.Str, d.Name()}...))
+			dir, err := ioutil.ReadDir(folder.Str)
+			if err != nil {
+				log.Println(err)
+			} else {
+				for _, d := range dir {
+					os.RemoveAll(path.Join([]string{folder.Str, d.Name()}...))
+				}
 			}
 		}
 		usedDiskAfter := calcUsedDiskVolume(string(filepath.Separator))
-		client.SendMessage(channel, fmt.Sprintf(folderDoesntExist, notExistFolders))
-		client.SendMessage(channel, fmt.Sprintf(txtAfterClean, usedDiskBefore, usedDiskAfter))
+		client.SendMessage(channel, fmt.Sprintf(folderDoesntExist, notExistFolders) + fmt.Sprintf(txtAfterClean, usedDiskBefore, usedDiskAfter))
 	} else {
 		client.SendMessage(channel, fmt.Sprintf(txtNotClean, usedDiskBefore))
 	}
