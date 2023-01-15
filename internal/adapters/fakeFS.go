@@ -7,7 +7,7 @@ import (
 
 type FakeFS struct{}
 
-func NewFaleFS() interfaces.FS {
+func NewFakeFS() interfaces.FS {
 	return FakeFS{}
 }
 

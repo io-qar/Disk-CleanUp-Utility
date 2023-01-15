@@ -16,9 +16,11 @@ type Application struct {
 }
 
 func NewAppication(cfg config.Config) (Application, error) {
+	// notifications := adapters.NewFakeTgBot(cfg.Telegram.BotToken)
+	// fs := adapters.NewFakeFS()
 
-	notifications := adapters.NewFakeTgBot(cfg.Telegram.BotToken)
-	fs := adapters.NewFaleFS()
+	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
+	fs := adapters.NewFS()
 
 	app := Application{
 		NotificationService: notifications,
@@ -43,8 +45,13 @@ func (a Application) Run() error {
 		// проводитм анализ логс на наличие ошибок, чтоб определить как отправить сообщение
 		// собираем все сообщение
 
+		if logs.Errors != nil {
+			msg.Text = strings.Join(logs.Errors, "-")
+		} else {
+			msg.Text = strings.Join(logs.Info, "-")
+		}
 		// простой пример
-		msg.Text = strings.Join(logs.Info, "-")
+		
 
 	} else {
 		// тут решаем из настроек надо ли информировать
