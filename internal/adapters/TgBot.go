@@ -3,6 +3,7 @@ package adapters
 import (
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
+	// "fmt"
 
 	"github.com/yanzay/tbot/v2"
 )
@@ -21,9 +22,6 @@ func NewTgBot(token string) interfaces.Notifications {
 
 func (f TgBot) SendMessage(msg entity.Message) error {
 	f.Client.SendMessage(msg.To, msg.Text)
-
-	// fmt.Printf("Получатель: %s", msg.To)
-	// fmt.Printf("Текст: \n%s", msg.Text)
 	return nil
 }
 

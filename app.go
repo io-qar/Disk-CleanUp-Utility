@@ -3,6 +3,7 @@ package main
 import (
 	"clean-utility/internal/app"
 	"clean-utility/internal/config"
+	"clean-utility/internal/entity"
 	"flag"
 	"io/ioutil"
 
@@ -12,20 +13,20 @@ import (
 func main() {
 	var configPath string
 
-	flag.StringVar(&configPath, "config", "../config.json", "Path to a config file")
+	flag.StringVar(&configPath, "config", "config.json", "Path to a config file")
 	flag.Parse()
 
 	content, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		log.Println(err)
+		log.Fatalf(entity.CreationError, err)
 	}
 
 	cfg := config.NewConfig(content)
 	app, err := app.NewAppication(cfg)
 	if err != nil {
-		log.Fatalf("Ошибка при создании приложения: %v", err)
+		log.Fatalf(entity.CreationError, err)
 	}
 	if err := app.Run(); err != nil {
-		log.Fatalf("Ошибка выполнения: %v", err)
+		log.Fatalf(entity.RunError, err)
 	}
 }

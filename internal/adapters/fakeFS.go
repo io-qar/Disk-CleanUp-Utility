@@ -16,7 +16,7 @@ func (f FakeFS) DiskInfo() (entity.Info, error) {
 		Total:  100500,
 		Free:   5000,
 		Used:   95500,
-		FSType: "FAKE",
+		FSType: "Windows",
 	}, nil
 }
 

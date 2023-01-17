@@ -3,7 +3,10 @@ package app
 import (
 	"clean-utility/internal/adapters"
 	"clean-utility/internal/config"
+	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
+	"fmt"
+
 	"strings"
 )
 
@@ -16,9 +19,6 @@ type Application struct {
 }
 
 func NewAppication(cfg config.Config) (Application, error) {
-	// notifications := adapters.NewFakeTgBot(cfg.Telegram.BotToken)
-	// fs := adapters.NewFakeFS()
-
 	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
 	fs := adapters.NewFS()
 
@@ -33,33 +33,31 @@ func NewAppication(cfg config.Config) (Application, error) {
 }
 
 func (a Application) Run() error {
-
-	info, err := a.FSService.DiskInfo()
+	infoBefore, err := a.FSService.DiskInfo()
 	if err != nil {
 		return err
 	}
 	msg := a.NotificationService.NewMessage()
 	msg.To = a.To
-	if a.MaxVolume < info.Used {
+	if a.MaxVolume < infoBefore.Used {
 		logs := a.FSService.ClearedFolders(a.Folders)
+		
+		infoAfter, err := a.FSService.DiskInfo()
+		if err != nil {
+			return err
+		}
+
 		// проводитм анализ логс на наличие ошибок, чтоб определить как отправить сообщение
 		// собираем все сообщение
-
-		if logs.Errors != nil {
-			msg.Text = strings.Join(logs.Errors, "-")
-		} else {
-			msg.Text = strings.Join(logs.Info, "-")
-		}
-		// простой пример
-		
-
+		logs.Info = append(logs.Info, fmt.Sprintf(entity.TxtAfterClean, infoAfter.Used, infoBefore.Used))
+		msg.Text = strings.Join(logs.Errors, "-")
+		msg.Text += strings.Join(logs.Info, "-")
 	} else {
 		// тут решаем из настроек надо ли информировать
 		// о том что надо отправлять сообщение если ничего не делалось
-
+		msg.Text = fmt.Sprintf(entity.TxtNotClean, infoBefore.Used)
 		// если надо
 		//  тогда заполняем msg нужной инфой
-
 	}
 
 	err = a.NotificationService.SendMessage(msg)
