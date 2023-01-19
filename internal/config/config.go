@@ -30,6 +30,6 @@ func NewConfig(jsonConfig []byte) Config {
 			gjson.Get(string(jsonConfig), "telegram-bot.token").Str,
 		},
 	}
- 
+
 	return v
 }

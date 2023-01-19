@@ -26,7 +26,7 @@ func (f FS) DiskInfo() (entity.Info, error) {
 
 	total := fs.Blocks * uint64(fs.Bsize)
 	free := fs.Bfree * uint64(fs.Bsize)
-	used := (total - free)*100/total
+	used := (total - free) * 100 / total
 
 	return entity.Info{
 		Total:  total,
@@ -38,24 +38,30 @@ func (f FS) DiskInfo() (entity.Info, error) {
 
 func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 	logs := entity.EventsLog{}
-	
+
 	for _, folder := range folders {
 		_, err := os.Stat(folder)
 		
 		if os.IsNotExist(err) {
-			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.ErrFolderDoesntExist, folder))
+			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.FolderDsntExistError, folder))
 			continue
+		} else if os.IsPermission(err) {
+			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.PermissionError, folder))
+			continue
+		} else {
+			logs.Errors = append(logs.Errors, fmt.Sprintf("Ошибка во время очистки папок: %v\n", err))
 		}
 
 		dir, err := ioutil.ReadDir(folder)
 		if err != nil {
-			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.ErrFolderDoesntExist, folder))
-		} else {
-			for _, d := range dir {
-				os.RemoveAll(path.Join([]string{folder, d.Name()}...))
-			}
-			logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
+			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.FolderDsntExistError, folder))
+			continue
 		}
+		
+		for _, d := range dir {
+			os.RemoveAll(path.Join([]string{folder, d.Name()}...))
+		}
+		logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 	}
 
 	return logs
