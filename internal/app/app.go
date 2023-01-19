@@ -20,7 +20,8 @@ type Application struct {
 
 func NewAppication(cfg config.Config) (Application, error) {
 	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
-	fs := adapters.NewFS()
+	// fs := adapters.NewFS()
+	fs := adapters.NewFakeFS()
 
 	app := Application{
 		NotificationService: notifications,
@@ -41,7 +42,7 @@ func (a Application) Run() error {
 	msg.To = a.To
 	if a.MaxVolume < infoBefore.Used {
 		logs := a.FSService.ClearedFolders(a.Folders)
-		
+
 		infoAfter, err := a.FSService.DiskInfo()
 		if err != nil {
 			return err

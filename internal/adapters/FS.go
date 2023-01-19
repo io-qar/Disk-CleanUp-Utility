@@ -1,3 +1,6 @@
+// // go:build !windows
+// // +build !windows
+
 package adapters
 
 import (
@@ -26,7 +29,7 @@ func (f FS) DiskInfo() (entity.Info, error) {
 
 	total := fs.Blocks * uint64(fs.Bsize)
 	free := fs.Bfree * uint64(fs.Bsize)
-	used := (total - free)*100/total
+	used := (total - free) * 100 / total
 
 	return entity.Info{
 		Total:  total,
@@ -38,10 +41,12 @@ func (f FS) DiskInfo() (entity.Info, error) {
 
 func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 	logs := entity.EventsLog{}
-	
+
 	for _, folder := range folders {
 		_, err := os.Stat(folder)
-		
+
+		// FIX-ME
+		//  почему мы проверяем только ошибку отсутствия, а другие?
 		if os.IsNotExist(err) {
 			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.ErrFolderDoesntExist, folder))
 			continue
@@ -50,8 +55,13 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 		dir, err := ioutil.ReadDir(folder)
 		if err != nil {
 			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.ErrFolderDoesntExist, folder))
+			// FIX-ME
+			// тут как и выше стоит стоит добавить continue
+			// а else что написан ниже просто убрать )))
 		} else {
 			for _, d := range dir {
+				// FIX-ME
+				// нет проверки на ошибку, надо добавить
 				os.RemoveAll(path.Join([]string{folder, d.Name()}...))
 			}
 			logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
