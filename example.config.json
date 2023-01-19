@@ -12,7 +12,7 @@
 
 	// настойка бота для информирования о результатах
   "telegram-bot": {
-		"token": "5471768780:AAEAbreeE6DDECknHmMrlD2Mfvedb5GIQ-w",
-		"channel": "1028417962"
+		"token": "<my-secret-bot-token>",
+		"channel": "<my-secret-bot-channel>"
 	}
 }

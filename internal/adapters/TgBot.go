@@ -3,13 +3,12 @@ package adapters
 import (
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
-	// "fmt"
 
 	"github.com/yanzay/tbot/v2"
 )
 
 type TgBot struct {
-	Token string
+	Token  string
 	Client *tbot.Client
 }
 
@@ -21,8 +20,8 @@ func NewTgBot(token string) interfaces.Notifications {
 }
 
 func (f TgBot) SendMessage(msg entity.Message) error {
-	f.Client.SendMessage(msg.To, msg.Text)
-	return nil
+	_, err := f.Client.SendMessage(msg.To, msg.Text)
+	return err
 }
 
 func (f TgBot) NewMessage() entity.Message {

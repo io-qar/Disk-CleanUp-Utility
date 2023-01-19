@@ -47,17 +47,11 @@ func (a Application) Run() error {
 			return err
 		}
 
-		// проводитм анализ логс на наличие ошибок, чтоб определить как отправить сообщение
-		// собираем все сообщение
 		logs.Info = append(logs.Info, fmt.Sprintf(entity.TxtAfterClean, infoAfter.Used, infoBefore.Used))
 		msg.Text = strings.Join(logs.Errors, "-")
 		msg.Text += strings.Join(logs.Info, "-")
 	} else {
-		// тут решаем из настроек надо ли информировать
-		// о том что надо отправлять сообщение если ничего не делалось
 		msg.Text = fmt.Sprintf(entity.TxtNotClean, infoBefore.Used)
-		// если надо
-		//  тогда заполняем msg нужной инфой
 	}
 
 	err = a.NotificationService.SendMessage(msg)
