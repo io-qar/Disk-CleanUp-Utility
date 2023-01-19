@@ -10,6 +10,11 @@ import (
 	"log"
 )
 
+// FIX_ME:
+// Rename `example.config.json` to `config.json`
+// 1. нет файла example.config.json, пропал куда-то
+// 2. добавить config.json в гитигнор
+
 func main() {
 	var configPath string
 
