@@ -17,6 +17,16 @@ func NewFS() interfaces.FS {
 	return FS{}
 }
 
+func ErrorCheckingFS(e error, ls entity.EventsLog, f string) {
+	if os.IsNotExist(e) {
+		ls.Errors = append(ls.Errors, fmt.Sprintf(entity.FolderDsntExistError, f))
+	} else if os.IsPermission(e) {
+		ls.Errors = append(ls.Errors, fmt.Sprintf(entity.PermissionError, f))
+	} else {
+		ls.Errors = append(ls.Errors, fmt.Sprintf("Ошибка во время очистки папок: %v\n", e))
+	}
+}
+
 func (f FS) DiskInfo() (entity.Info, error) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(string(filepath.Separator), &fs)
@@ -42,14 +52,9 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 	for _, folder := range folders {
 		_, err := os.Stat(folder)
 		
-		if os.IsNotExist(err) {
-			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.FolderDsntExistError, folder))
+		if err != nil {
+			ErrorCheckingFS(err, logs, folder)
 			continue
-		} else if os.IsPermission(err) {
-			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.PermissionError, folder))
-			continue
-		} else {
-			logs.Errors = append(logs.Errors, fmt.Sprintf("Ошибка во время очистки папок: %v\n", err))
 		}
 
 		dir, err := ioutil.ReadDir(folder)
@@ -59,7 +64,11 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 		}
 		
 		for _, d := range dir {
-			os.RemoveAll(path.Join([]string{folder, d.Name()}...))
+			err := os.RemoveAll(path.Join([]string{folder, d.Name()}...))
+			if err != nil {
+				ErrorCheckingFS(err, logs, folder)
+				continue
+			}
 		}
 		logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 	}
