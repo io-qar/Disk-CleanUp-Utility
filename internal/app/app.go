@@ -1,7 +1,6 @@
 package app
 
 import (
-	"clean-utility/internal/adapters"
 	"clean-utility/internal/config"
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
@@ -18,10 +17,7 @@ type Application struct {
 	To                  string
 }
 
-func NewAppication(cfg config.Config) (Application, error) {
-	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
-	fs := adapters.NewFS()
-
+func NewAppication(cfg config.Config, fs interfaces.FS, notifications interfaces.Notifications) (Application, error) {
 	app := Application{
 		NotificationService: notifications,
 		FSService:           fs,
@@ -41,7 +37,7 @@ func (a Application) Run() error {
 	msg.To = a.To
 	if a.MaxVolume < infoBefore.Used {
 		logs := a.FSService.ClearedFolders(a.Folders)
-		
+
 		infoAfter, err := a.FSService.DiskInfo()
 		if err != nil {
 			return err

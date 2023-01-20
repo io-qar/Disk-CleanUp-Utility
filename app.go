@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clean-utility/internal/adapters"
 	"clean-utility/internal/app"
 	"clean-utility/internal/config"
 	"clean-utility/internal/entity"
@@ -22,7 +23,9 @@ func main() {
 	}
 
 	cfg := config.NewConfig(content)
-	app, err := app.NewAppication(cfg)
+	fs := adapters.NewFS()
+	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
+	app, err := app.NewAppication(cfg, fs, notifications)
 	if err != nil {
 		log.Fatalf(entity.CreationError, err)
 	}
