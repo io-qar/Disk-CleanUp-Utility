@@ -43,7 +43,7 @@ func (a Application) Run() error {
 			return err
 		}
 
-		logs.Info = append(logs.Info, fmt.Sprintf(entity.TxtAfterClean, infoAfter.Used, infoBefore.Used))
+		logs.Info = append(logs.Info, fmt.Sprintf(entity.TxtAfterClean, infoBefore.Used, infoAfter.Used))
 		msg.Text = strings.Join(logs.Errors, "-")
 		msg.Text += strings.Join(logs.Info, "-")
 	} else {

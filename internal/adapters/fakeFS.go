@@ -14,9 +14,9 @@ func NewFakeFS() interfaces.FS {
 
 func (f FakeFS) DiskInfo() (entity.Info, error) {
 	return entity.Info{
-		Total:  100500,
-		Free:   5000,
-		Used:   95500,
+		Total:  10,
+		Free:   4,
+		Used:   6,
 		FSType: "Windows",
 	}, nil
 }
