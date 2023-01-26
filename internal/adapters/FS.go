@@ -17,7 +17,7 @@ func NewFS() interfaces.FS {
 	return FS{}
 }
 
-func ErrorCheckingFS(e error, ls entity.EventsLog, f string) {
+func ErrorCheckingFS(e error, ls entity.EventsLog, f string) []string {
 	if os.IsNotExist(e) {
 		ls.Errors = append(ls.Errors, fmt.Sprintf(entity.FolderDsntExistError, f))
 	} else if os.IsPermission(e) {
@@ -25,6 +25,8 @@ func ErrorCheckingFS(e error, ls entity.EventsLog, f string) {
 	} else {
 		ls.Errors = append(ls.Errors, fmt.Sprintf("Ошибка во время очистки папок: %v\n", e))
 	}
+
+	return ls.Errors
 }
 
 func (f FS) DiskInfo() (entity.Info, error) {
@@ -53,7 +55,7 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 		_, err := os.Stat(folder)
 		
 		if err != nil {
-			ErrorCheckingFS(err, logs, folder)
+			logs.Errors = append(ErrorCheckingFS(err, logs, folder))
 			continue
 		}
 
@@ -66,11 +68,11 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 		for _, d := range dir {
 			err := os.RemoveAll(path.Join([]string{folder, d.Name()}...))
 			if err != nil {
-				ErrorCheckingFS(err, logs, folder)
+				logs.Errors = append(ErrorCheckingFS(err, logs, folder))
 				continue
 			}
+			logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 		}
-		logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 	}
 
 	return logs
