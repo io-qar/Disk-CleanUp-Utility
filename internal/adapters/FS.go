@@ -4,7 +4,6 @@ import (
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -17,7 +16,7 @@ func NewFS() interfaces.FS {
 	return FS{}
 }
 
-func ErrorCheckingFS(e error, ls entity.EventsLog, f string) {
+func (fs FS) ErrorCheckingFS(e error, ls *entity.EventsLog, f string) {
 	if os.IsNotExist(e) {
 		ls.Errors = append(ls.Errors, fmt.Sprintf(entity.FolderDsntExistError, f))
 	} else if os.IsPermission(e) {
@@ -51,26 +50,26 @@ func (f FS) ClearedFolders(folders []string) entity.EventsLog {
 
 	for _, folder := range folders {
 		_, err := os.Stat(folder)
-		
+
 		if err != nil {
-			ErrorCheckingFS(err, logs, folder)
+			f.ErrorCheckingFS(err, &logs, folder)
 			continue
 		}
 
-		dir, err := ioutil.ReadDir(folder)
+		dir, err := os.ReadDir(folder)
 		if err != nil {
 			logs.Errors = append(logs.Errors, fmt.Sprintf(entity.FolderDsntExistError, folder))
 			continue
 		}
-		
+
 		for _, d := range dir {
 			err := os.RemoveAll(path.Join([]string{folder, d.Name()}...))
 			if err != nil {
-				ErrorCheckingFS(err, logs, folder)
+				f.ErrorCheckingFS(err, &logs, folder)
 				continue
 			}
+			logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 		}
-		logs.Info = append(logs.Info, fmt.Sprintf(entity.FolderDeleted, folder))
 	}
 
 	return logs
