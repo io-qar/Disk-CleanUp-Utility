@@ -34,7 +34,7 @@ func Test_ClearedFolders(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if logs := tt.FSService.ClearedFolders(tt.folders); (logs.Errors == nil) /*!= tt.logs*/ {
+			if logs := tt.FSService.ClearedFolders(tt.folders); (logs.Errors == nil) {
 				t.Errorf("ClearedFolders() error = %v, logs %v", logs, tt.logs)
 			}
 		})

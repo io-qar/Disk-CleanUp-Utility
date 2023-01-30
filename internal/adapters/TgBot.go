@@ -3,6 +3,7 @@ package adapters
 import (
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
+	// "fmt"
 
 	"github.com/yanzay/tbot/v2"
 )
@@ -20,7 +21,20 @@ func NewTgBot(token string) interfaces.Notifications {
 }
 
 func (f TgBot) SendMessage(msg entity.Message) error {
-	_, err := f.Client.SendMessage(msg.To, msg.Text)
+	const MAX_SIZE = 4096
+	var err error = nil
+	last := 0
+
+	for x := 0; x <= len(msg.Text); x += MAX_SIZE {
+		if x+MAX_SIZE < len(msg.Text) {
+			_, err = f.Client.SendMessage(msg.To, msg.Text[x:x+MAX_SIZE])
+		} else {
+			last = x
+			break
+		}
+	}
+	_, err = f.Client.SendMessage(msg.To, msg.Text[last:])
+
 	return err
 }
 
