@@ -1,6 +1,9 @@
 package config
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/tidwall/gjson"
+	"clean-utility/internal/entity"
+)
 
 const (
 	defaultVolume uint64 = 50
@@ -18,8 +21,10 @@ type Config struct {
 func NewConfig(jsonConfig []byte) Config {
 	folders := gjson.Get(string(jsonConfig), "folders").Array()
 	var configFolders []string
+	entity.InfoLogger.Println("Чтение папок")
 	for _, folder := range folders {
 		configFolders = append(configFolders, folder.Str)
+		entity.InfoLogger.Printf("Папка %s добавлена в очередь очистки", folder.Str)
 	}
 
 	v := Config{

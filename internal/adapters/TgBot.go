@@ -3,7 +3,6 @@ package adapters
 import (
 	"clean-utility/internal/entity"
 	"clean-utility/internal/interfaces"
-	// "fmt"
 
 	"github.com/yanzay/tbot/v2"
 )
