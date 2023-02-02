@@ -17,7 +17,7 @@ type Logger struct{
 func NewLogger() interfaces.Logger {
 	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
 	output.FormatLevel = func(i interface{}) string {
-    return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
+		return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
 	}
 	output.FormatMessage = func(i interface{}) string {
 		return fmt.Sprintf("%s", i)
@@ -32,35 +32,38 @@ func NewLogger() interfaces.Logger {
 	return Logger{output}
 }
 
-func (lg Logger) Info(s string, vs ...string) {
+func (lg Logger) Info(s string) {
 	log := zerolog.New(lg.output).With().Timestamp().Logger()
-	if vs != nil {
-		for _, v := range vs {
-			log.Info().Msgf(s, v)
-		}
-	} else {
-		log.Info().Msg(s)
-	}
+
+	log.Info().Msg(s)
 }
 
-func (lg Logger) Error(s string, vs ...string) {
+func (lg Logger) Infof(s string, v string) {
 	log := zerolog.New(lg.output).With().Timestamp().Logger()
-	if vs != nil {
-		for _, v := range vs {
-			log.Error().Msgf(s, v)
-		}
-	} else {
-		log.Error().Msg(s)
-	}
+	
+	log.Info().Msgf(s, v)
 }
 
-func (lg Logger) Warn(s string, vs ...string) {
+func (lg Logger) Error(s string) {
 	log := zerolog.New(lg.output).With().Timestamp().Logger()
-	if vs != nil {
-		for _, v := range vs {
-			log.Warn().Msgf(s, v)
-		}
-	} else {
-		log.Warn().Msg(s)
-	}
+
+	log.Error().Msg(s)
+}
+
+func (lg Logger) Errorf(s string, v string) {
+	log := zerolog.New(lg.output).With().Timestamp().Logger()
+
+	log.Error().Msgf(s, v)
+}
+
+func (lg Logger) Warn(s string) {
+	log := zerolog.New(lg.output).With().Timestamp().Logger()
+
+	log.Warn().Msg(s)
+}
+
+func (lg Logger) Warnf(s string, v string) {
+	log := zerolog.New(lg.output).With().Timestamp().Logger()
+
+	log.Warn().Msgf(s, v)
 }

@@ -41,7 +41,9 @@ func (a Application) Run() error {
 	msg.To = a.To
 	if a.MaxVolume < infoBefore.Used {
 		a.Logger.Info("Объём в конфиге меньше, чем занятно на диске, очистка каталогов...")
+		a.Logger.Info("Начало очистки каталогов")
 		logs := a.FSService.ClearedFolders(a.Folders)
+		a.Logger.Info("Очистка каталогов завершена")
 
 		infoAfter, err := a.FSService.DiskInfo()
 		if err != nil {

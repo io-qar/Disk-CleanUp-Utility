@@ -1,7 +1,10 @@
 package interfaces
 
 type Logger interface {
-	Info(string, ...string)
-	Error(string, ...string)
-	Warn(string, ...string)
+	Info(string)
+	Infof(string, string)
+	Error(string)
+	Errorf(string, string)
+	Warn(string)
+	Warnf(string, string)
 }

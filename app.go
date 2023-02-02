@@ -19,17 +19,18 @@ func main() {
 	flag.StringVar(&configPath, "config", "config.json", "Path to a config file")
 	flag.Parse()
 	content, err := ioutil.ReadFile(configPath)
-	logger.Info("Чтение файла конфигурации", configPath)
+	logger.Infof("Чтение файла конфигурации", configPath)
 	if err != nil {
 		logger.Info("Ошибка при чтении файла конфигурации")
 		log.Fatalf(entity.CreationError, err)
 	}
 	
 	cfg := config.NewConfig(content)
+	logger.Info("Чтение файла конфигурации завершено")
 	fs := adapters.NewFS()
 	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
 	app, err := app.NewAppication(cfg, fs, notifications, logger)
-	logger.Info("Инициализация бота с токеном %s", cfg.Telegram.BotToken)
+	logger.Infof("Инициализация бота с токеном %s", cfg.Telegram.BotToken)
 	if err != nil {
 		logger.Error("Ошибка при создании приложения")
 		log.Fatalf(entity.CreationError, err)
