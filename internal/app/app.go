@@ -15,15 +15,17 @@ type Application struct {
 	MaxVolume           uint64
 	Folders             []string
 	To                  string
+	Logger              interfaces.Logger
 }
 
-func NewAppication(cfg config.Config, fs interfaces.FS, notifications interfaces.Notifications) (Application, error) {
+func NewAppication(cfg config.Config, fs interfaces.FS, notifications interfaces.Notifications, lg interfaces.Logger) (Application, error) {
 	app := Application{
 		NotificationService: notifications,
 		FSService:           fs,
 		MaxVolume:           cfg.MaxVolume,
 		Folders:             cfg.Folders,
 		To:                  cfg.Telegram.Channel,
+		Logger:              lg,
 	}
 	return app, nil
 }
@@ -31,39 +33,39 @@ func NewAppication(cfg config.Config, fs interfaces.FS, notifications interfaces
 func (a Application) Run() error {
 	infoBefore, err := a.FSService.DiskInfo()
 	if err != nil {
-		entity.ErrorLogger.Println("Ошибка во время сбора информации об объёме диска до очистки")
+		a.Logger.Error("Ошибка во время сбора информации об объёме диска до очистки")
 		return err
 	}
-	entity.InfoLogger.Println("Собрана информация об объёме диска до очистки")
+	a.Logger.Info("Собрана информация об объёме диска до очистки")
 	msg := a.NotificationService.NewMessage()
 	msg.To = a.To
 	if a.MaxVolume < infoBefore.Used {
-		entity.InfoLogger.Println("Объём в конфиге меньше, чем занятно на диске, очистка каталогов...")
+		a.Logger.Info("Объём в конфиге меньше, чем занятно на диске, очистка каталогов...")
 		logs := a.FSService.ClearedFolders(a.Folders)
 
 		infoAfter, err := a.FSService.DiskInfo()
 		if err != nil {
-			entity.ErrorLogger.Println("Ошибка во время сбора информации об объёме диска после очистки")
+			a.Logger.Error("Ошибка во время сбора информации об объёме диска после очистки")
 			return err
 		}
-		entity.InfoLogger.Println("Собрана информация об объёме диска после очистки, сбор логов для отправки в ТГ")
+		a.Logger.Info("Собрана информация об объёме диска после очистки, сбор логов для отправки в ТГ")
 
 		logs.Info = append(logs.Info, fmt.Sprintf(entity.TxtAfterClean, infoBefore.Used, infoAfter.Used))
 		msg.Text = strings.Join(logs.Errors, "-")
 		msg.Text += strings.Join(logs.Info, "-")
-		entity.InfoLogger.Println("Логи для отправки в ТГ собраны")
+		a.Logger.Info("Логи для отправки в ТГ собраны")
 	} else {
-		entity.InfoLogger.Println("Очистка каталогов не производилась")
+		a.Logger.Info("Очистка каталогов не производилась")
 		msg.Text = fmt.Sprintf(entity.TxtNotClean, infoBefore.Used)
 	}
 
-	entity.InfoLogger.Println("Отправка логов в ТГ")
+	a.Logger.Info("Отправка логов в ТГ")
 	err = a.NotificationService.SendMessage(msg)
 	if err != nil {
-		entity.ErrorLogger.Println("Ошибка при отправке логов в ТГ")
+		a.Logger.Error("Ошибка при отправке логов в ТГ")
 		return err
 	}
-	entity.InfoLogger.Println("Логи отправлены в ТГ")
+	a.Logger.Info("Логи отправлены в ТГ")
 
 	return nil
 }
