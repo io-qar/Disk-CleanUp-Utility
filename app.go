@@ -11,15 +11,17 @@ import (
 	"log"
 )
 
+var ver string
+
 func main() {
 	logger := adapters.NewLogger()
-	logger.Info("Запуск утилиты")
+	logger.Infof("Запуск утилиты, ВЕРСИЯ: %s", ver)
 	var configPath string
 
 	flag.StringVar(&configPath, "config", "config.json", "Path to a config file")
 	flag.Parse()
 	content, err := ioutil.ReadFile(configPath)
-	logger.Infof("Чтение файла конфигурации", configPath)
+	logger.Infof("Чтение файла конфигурации: %s", configPath)
 	if err != nil {
 		logger.Info("Ошибка при чтении файла конфигурации")
 		log.Fatalf(entity.CreationError, err)
