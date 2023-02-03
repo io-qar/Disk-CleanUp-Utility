@@ -14,10 +14,14 @@ stages:
 
 adapterTest:
   stage: test
+  tags:
+    - myPipeline
   script:
     - go test ./internal/adapter
 
 appTest:
   stage: test
+  tags:
+    - myPipeline
   script:
     - go test ./internal/app
