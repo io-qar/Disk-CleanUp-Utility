@@ -15,6 +15,7 @@ func TestApplication_Run(t *testing.T) {
 			name: "ошибка получения информации о диске",
 			a: Application{
 				FSService: adapters.NewBadFakeFS(),
+				Logger: adapters.NewLogger(),
 			},
 			wantErr: true,
 		},
@@ -26,6 +27,7 @@ func TestApplication_Run(t *testing.T) {
 				MaxVolume: 7,
 				Folders: []string{"test"},
 				To: "",
+				Logger: adapters.NewLogger(),
 			},
 			wantErr: true,
 		},
@@ -37,6 +39,7 @@ func TestApplication_Run(t *testing.T) {
 				MaxVolume: 5,
 				Folders: []string{"test"},
 				To: "1028417962",
+				Logger: adapters.NewLogger(),
 			},
 			wantErr: false,
 		},
