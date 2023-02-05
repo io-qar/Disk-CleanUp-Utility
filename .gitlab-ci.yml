@@ -15,7 +15,7 @@ stages:
 adapterTest:
   stage: test
   script:
-    - go test ./internal/adapter
+    - go test ./internal/adapters
 
 appTest:
   stage: test
