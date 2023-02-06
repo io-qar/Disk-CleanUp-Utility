@@ -11,6 +11,7 @@ image: golang:1.19.5
 
 stages:
   - test
+  - build
 
 test:
   stage: test
@@ -22,3 +23,12 @@ test:
     paths:
       - coverage.out
     expire_in: 1 day
+
+build:
+  stage: build
+  script:
+    - env GOOS=linux go build -o builds/linux -ldflags "-X main.ver=$CI_COMMIT_REF_NAME"
+    - env GOOS=darwin go build -o builds/mac -ldflags "-X main.ver=$CI_COMMIT_REF_NAME"
+  artifacts:
+    paths:
+      - builds
