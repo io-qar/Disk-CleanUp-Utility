@@ -1,9 +1,0 @@
-*.exe
-README.md
-
-Dockerfile
-
-.gitignore
-.git
-
-.vscode

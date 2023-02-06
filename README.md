@@ -1,14 +1,20 @@
 # Disk-CleanUp-Utility
-This utility cleans up folders written in `config.json`
+Утилита, очищающая папки, указанные в вашем `config.json`.
 
-# Setup & Run
-## Docker (skip for local setup)
+# Сборка и запуск
+## Docker
 1. `docker build -t cleaning .`
 2. `docker run --name cleaning -it cleaning`
-3. Rename `example.config.json` to `config.json`
-4. Edit `config.json` as you need to
-## Local
-1. Rename `example.config.json` to `config.json`
-2. Edit `config.json` as you need to
+3. Переименуйте `example.config.json` в `config.json`
+4. Отредактируйте `config.json`
+## Из-под windows для macOS через Docker
+1. Запуск Docker контейнера (cmd): `docker run -v %cd%:/builder -w /builder -i -t golang:1.19 bash`
+2. `CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o diskclean.app ./app.go`
+3. Файл `diskclean` перенести на целевую машуну вместе с конфиг. файлом
+4. Переименуйте `example.config.json` в `config.json`
+5. Отредактируйте `config.json`
+## Локально
+1. Переименуйте `example.config.json` в `config.json`
+2. Отредактируйте `config.json`
 3. `go build -o clean-utility`
-4. `./clean-utility --config="./config.json"` (you can edit the path to your config file with the `--config` flag)
+4. `./clean-utility --config="<путь до конфиг. файла>"`
