@@ -13,9 +13,8 @@ stages:
   - test
   - build
 
-test:
+tests:
   stage: test
-  image: golang:1.19
   script:
     - go test -timeout 30s ./... -coverprofile=coverage.out
     - go tool cover -func=coverage.out   
@@ -24,11 +23,21 @@ test:
       - coverage.out
     expire_in: 1 day
 
+spellcheck:
+  stage: test
+  image: node:19-alpine3.15
+  script: 
+    - npm i -g cspell-cli
+    - npm install -g @cspell/dict-ru_ru
+    - cspell-cli -u -c cspell.json "**"
+  except:
+    - tags
+
 build:
   stage: build
   script:
     - env GOOS=linux go build -o builds/linux -ldflags "-X main.ver=$CI_COMMIT_REF_NAME"
-    - env GOOS=darwin go build -o builds/mac -ldflags "-X main.ver=$CI_COMMIT_REF_NAME"
+    - env GOOS=darwin go build -o builds/mac.app -ldflags "-X main.ver=$CI_COMMIT_REF_NAME"
   artifacts:
     paths:
       - builds

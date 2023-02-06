@@ -18,7 +18,7 @@ type Application struct {
 	Logger              interfaces.Logger
 }
 
-func NewAppication(cfg config.Config, fs interfaces.FS, notifications interfaces.Notifications, lg interfaces.Logger) (Application, error) {
+func NewApplication(cfg config.Config, fs interfaces.FS, notifications interfaces.Notifications, lg interfaces.Logger) (Application, error) {
 	app := Application{
 		NotificationService: notifications,
 		FSService:           fs,

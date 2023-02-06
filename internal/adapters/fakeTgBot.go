@@ -17,7 +17,7 @@ func NewFakeTgBot(token string) interfaces.Notifications {
 
 func (f FakeTgBot) SendMessage(msg entity.Message) error {
 	if msg.To == "" {
-		return errors.New("Empty reciever\n")
+		return errors.New("Empty receiver\n")
 	}
 
 	fmt.Printf("[fake-notification] Получатель: %s\n", msg.To)

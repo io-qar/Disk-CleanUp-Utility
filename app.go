@@ -31,7 +31,7 @@ func main() {
 	logger.Info("Чтение файла конфигурации завершено")
 	fs := adapters.NewFS()
 	notifications := adapters.NewTgBot(cfg.Telegram.BotToken)
-	app, err := app.NewAppication(cfg, fs, notifications, logger)
+	app, err := app.NewApplication(cfg, fs, notifications, logger)
 	logger.Infof("Инициализация бота с токеном %s", cfg.Telegram.BotToken)
 	if err != nil {
 		logger.Error("Ошибка при создании приложения")

@@ -1,0 +1,30 @@
+{
+	"version": "0.2",
+	"ignorePaths": [
+		"Dockerfile",
+		"go.sum",
+		"go.mod"
+	],
+	"dictionaries": [
+		"ru-ru",
+		"custom"
+	],
+	"words": [
+		"dynamicstruct",
+		"gorm",
+		"Infof",
+		"dbname",
+		"sslmode",
+		"gonic",
+		"ompluscator",
+		"Structs",
+		"usecase",
+		"mitchellh",
+		"mapstructure"
+	],
+	"ignoreWords": [],
+	"import": [
+		"@cspell/dict-ru_ru/cspell-ext.json"
+	],
+	"enableFiletypes": []
+}
