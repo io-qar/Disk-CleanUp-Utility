@@ -12,12 +12,13 @@ image: golang:1.19.5
 stages:
   - test
 
-adapterTest:
+test:
   stage: test
+  image: golang:1.19
   script:
-    - go test ./internal/adapters
-
-appTest:
-  stage: test
-  script:
-    - go test ./internal/app
+    - go test -timeout 30s ./... -coverprofile=coverage.out
+    - go tool cover -func=coverage.out   
+  artifacts:
+    paths:
+      - coverage.out
+    expire_in: 1 day
