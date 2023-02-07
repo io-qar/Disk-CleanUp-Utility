@@ -1,0 +1,29 @@
+{
+	"branch": "main",
+	"plugins": [
+		"@semantic-release/commit-analyzer",
+		"@semantic-release/release-notes-generator",
+		[
+			"@semantic-release/changelog",
+			{
+				"changelogFile": "CHANGELOG.md",
+				"changelogTitle": "#Changelog"
+			}
+		],
+		[
+			"@semantic-release/exec",
+			{
+				"prepareCmd": "echo ${nextRelease.version} > VERSION"
+			}
+		],
+		[
+			"@semantic-release/gitlab",
+			{
+				"gitlabUrl": "https://gitlab.com",
+				"assets": [
+					{"path": "CHANGELOG.md", "label": "CHANGELOG.md"}
+				]
+			}
+		]
+	]
+}

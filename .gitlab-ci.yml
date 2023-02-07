@@ -12,6 +12,7 @@ image: golang:1.19.5
 stages:
   - test
   - build
+  - release
 
 tests:
   stage: test
@@ -41,3 +42,21 @@ build:
   artifacts:
     paths:
       - builds
+
+release:
+  image: node:19.2
+  before_script:
+    - |
+      npm install -g semantic-release           \
+      @semantic-release/changelog               \
+      @semantic-release/commit-analyzer         \
+      @semantic-release/exec                    \
+      @semantic-release/git                     \
+      @semantic-release/release-notes-generator \
+      @semantic-release/gitlab
+  stage: release
+  script: >
+    npx semantic-release
+  only:
+    - main
+  when: manual
