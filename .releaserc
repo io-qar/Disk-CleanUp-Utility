@@ -20,6 +20,7 @@
 			"@semantic-release/gitlab",
 			{
 				"gitlabUrl": "https://gitlab.com",
+				"gitlabToken": "$GL_TOKEN",
 				"assets": [
 					{"path": "CHANGELOG.md", "label": "CHANGELOG.md"}
 				]
