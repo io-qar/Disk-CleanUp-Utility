@@ -20,7 +20,6 @@
 			"@semantic-release/gitlab",
 			{
 				"gitlabUrl": "https://gitlab.com/tid2/Disk-CleanUp-Utility/",
-				"GL_TOKEN": "glpat-buf7vh-L5z-sy3sHxidv,
 				"assets": [
 					{"path": "CHANGELOG.md", "label": "CHANGELOG.md"}
 				]
