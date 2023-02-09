@@ -29,7 +29,7 @@ spellcheck:
   image: node:19-alpine3.15
   script: 
     - npm i -g cspell-cli
-    - npm install -g @cspell/dict-ru_ru
+    - npm i -g @cspell/dict-ru_ru
     - cspell-cli -u -c cspell.json "**"
   except:
     - tags
