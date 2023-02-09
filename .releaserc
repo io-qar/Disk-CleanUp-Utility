@@ -20,6 +20,7 @@
 			"@semantic-release/gitlab",
 			{
 				"gitlabUrl": "https://gitlab.com",
+				"GH_TOKEN": "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",
 				"assets": [
 					{"path": "CHANGELOG.md", "label": "CHANGELOG.md"}
 				]
