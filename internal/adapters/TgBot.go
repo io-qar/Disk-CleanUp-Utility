@@ -23,6 +23,7 @@ func (f TgBot) SendMessage(msg entity.Message) error {
 	const MAX_SIZE = 4096
 	var err error = nil
 	last := 0
+	msg.Text = string(msg.Text)
 
 	for x := 0; x <= len(msg.Text); x += MAX_SIZE {
 		if x+MAX_SIZE < len(msg.Text) {

@@ -15,7 +15,7 @@ func Test_ClearedFolders(t *testing.T) {
 		{
 			name: "test folder doesn't exist",
 			FSService: NewFakeFS(),
-			folders: []string{"../../test 1"},
+			folders: []string{"../../10000"},
 			logs: []string{""},
 		},
 		{
